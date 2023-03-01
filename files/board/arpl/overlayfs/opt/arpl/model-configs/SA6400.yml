@@ -17,7 +17,6 @@ cmdline: &cmdline
   scsi_mod.use_blk_mq: 1
 platform: "epyc7002"
 unique: "synology_epyc7002_sa6400"
-beta: true
 dom: 2
 serial:
   prefix:
@@ -36,13 +35,14 @@ builds:
     synoinfo:
       <<: *synoinfo
     pat:
-      url: "https://global.download.synology.com/download/DSM/release/7.1.1/42962/DSM_SA6400_42962.pat"
+      url: "https://cndl.synology.cn/download/DSM/release/7.1.1/42962-4/DSM_SA6400_42962.pat"
+      # url: "https://global.download.synology.com/download/DSM/release/7.1.1/42962-4/DSM_SA6400_42962.pat"
       hash: "83fc408380ebb1381224261de6220b873d7b62a99e715557509ae9553f618a71"
       ramdisk-hash: "d4efe45fc4dd71758fe365f7eb39d24982d1440b00986259cab9a03577982f68"
       zimage-hash: "d5b8af848fc585695e35bd1c4f4c953fd8e54435b2799face4f8f350bac6df93"
       md5-hash: "fdbbea86e280a8f754339a064f9ad2df"
     patch:
       - "ramdisk-common-disable-root-pwd.patch"
-      - "ramdisk-common-init-script.patch"
+      - "ramdisk-sa6400-init-script.patch"
       - "ramdisk-common-etc-rc.patch"
       - "ramdisk-42951-post-init-script.patch"
