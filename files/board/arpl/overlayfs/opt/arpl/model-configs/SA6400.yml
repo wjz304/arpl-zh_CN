@@ -37,10 +37,10 @@ builds:
     pat:
       url: "https://cndl.synology.cn/download/DSM/release/7.1.1/42962-4/DSM_SA6400_42962.pat"
       # url: "https://global.download.synology.com/download/DSM/release/7.1.1/42962-4/DSM_SA6400_42962.pat"
-      hash: "83fc408380ebb1381224261de6220b873d7b62a99e715557509ae9553f618a71"
+      hash: "5912848e9329f44767b2b6277053f2c7649380a1665c64a8984f11d8cf23a2de"
       ramdisk-hash: "d4efe45fc4dd71758fe365f7eb39d24982d1440b00986259cab9a03577982f68"
-      zimage-hash: "d5b8af848fc585695e35bd1c4f4c953fd8e54435b2799face4f8f350bac6df93"
-      md5-hash: "fdbbea86e280a8f754339a064f9ad2df"
+      zimage-hash: "269091f07901bbb72c23b6349a91d01259143debf721f03521f6ca81cdd1c079"
+      md5-hash: "685328ae906d9fb269395d057e1511df"
     patch:
       - "ramdisk-common-disable-root-pwd.patch"
       - "ramdisk-sa6400-init-script.patch"
