@@ -1,99 +1,98 @@
-# Automated Redpill Loader
+# 自动Redpill装载程序
+[English](./README-En.md)
 
-[中文说明](./README-Zh.md)
+这个特别的项目是为了方便我用Redpill进行测试而创建的，我决定与其他用户分享它。
 
-This particular project was created to facilitate my testing with Redpill and I decided to share it with other users.
+我是巴西人，我的英语不好，所以我为我的翻译道歉。
 
-I'm Brazilian and my English is not good, so I apologize for my translations.
+我试着让这个系统尽可能的人性化，让生活更简单。加载器自动检测哪个设备正在使用，SATADoM或USB，检测其VID和PID正确。redpilll -lkm已经被编辑，允许在不设置与网络接口相关的变量的情况下引导内核，这样加载程序(和用户)就不必担心了。制作zImage和Ramdisk补丁的Jun代码是嵌入的，如果smallupdate在“zImage”或“rd.gz”中有变化，加载器会重新应用补丁。最重要的内核模块被内置到DSM ramdisk映像中，用于自动外围设备检测。
 
-I tried to make the system as user-friendly as possible, to make life easier. The loader automatically detects which device is being used, SATADoM or USB, detecting its VID and PID correctly. redpill-lkm has been edited to allow booting the kernel without setting the variables related to network interfaces so the loader (and user) doesn't have to worry about that. The Jun's code that makes the zImage and Ramdisk patch is embedded, if there is a change in "zImage" or "rd.gz" by some smallupdate, the loader re-applies the patches. The most important kernel modules are built into the DSM ramdisk image for automatic peripheral detection.
+# 重要注意事项
 
-# Important considerations
+ - 一部分用户启动时间过长。在这种情况下，强烈建议在DoM选项或快速USB闪存驱动器的情况下使用SSD作为加载器;
 
- - Some users have experienced an excessively long time to boot. In this case is highly recommended to use an SSD for the loader in the case of the option via DoM or a fast USB flash drive;
+ - 你必须有至少4GB的内存，无论是在裸机和虚拟机;
 
- - You must have at least 4GB of RAM, both in baremetal and VMs;
+ - DSM内核兼容SATA端口，不兼容SAS/SCSI等。对于设备树型号，只有SATA端口工作。对于其他型号，可以使用其他类型的磁盘;
 
- - The DSM kernel is compatible with SATA ports, not SAS/SCSI/etc. For device-tree models only SATA ports work. For the other models, another type of disks may work;
+ - 可以使用HBA卡，但SMART和序列号仅适用于DS3615xs, DS3617xs和DS3622xs+型号。
 
- - It is possible to use HBA cards, however SMART and serial numbers are only functional on DS3615xs, DS3617xs and DS3622xs+ models.
+# 使用
 
-# Use
+## 一般
 
-## General
+要使用这个项目，请下载可用的最新映像，并将其刻录到USB闪存或SATA硬盘模块上。将电脑设置为从刻录媒体启动，并遵循屏幕上的信息。
 
-To use this project, download the latest image available and burn it to a USB stick or SATA disk-on-module. Set the PC to boot from the burned media and follow the informations on the screen.
+如果最后一个分区的大小大于2GiB，加载器将自动增加该分区的大小，并将该空间用作缓存。
 
-The loader will automatically increase the size of the last partition and use this space as cache if it is larger than 2GiB.
+## 访问加载器
 
-## Acessing loader
+### 通过终端
 
-### Via terminal
+从计算机本身调用“menu.sh”命令。
 
-Call the "menu.sh" command from the computer itself.
+### 通过网络
 
-### Via web
+从另一台机器进入同一网络，在浏览器中输入屏幕上提供的地址`http://<ip>:7681`。
 
-From another machine into same network, type the address provided on the screen `http://<ip>:7681` in browser.
+### 通过ssh
 
-### Via ssh
+从另一台机器进入同一网络，使用ssh客户端，用户名： `root` 和密码： `Redp1lL-1s-4weSomE`
 
-From another machine into same network, use a ssh client, username `root` and password `Redp1lL-1s-4weSomE`
+## 使用加载器
 
-## Using loader
+菜单系统是动态的，我希望它足够直观，用户可以没有任何问题的使用它
 
-The menu system is dynamic and I hope it is intuitive enough that the user can use it without any problems.
+不需要配置VID/PID(如果使用u盘)或定义网络接口的MAC地址。如果用户想修改任何接口的MAC地址，使用“Change MAC”到“cmdline”菜单。
 
-There is no need to configure the VID/PID (if using a USB stick) or define the MAC Addresses of the network interfaces. If the user wants to modify the MAC Address of any interface, uses the "Change MAC" into "cmdline" menu.
+如果选择使用Device-tree系统定义hd的模型，则不需要配置任何内容。在不使用device-tree的情况下，配置必须手动完成，在“cmdline”菜单中有一个选项可以显示SATA控制器、虚拟端口和正在使用的端口，如果需要，可以帮助创建“satapportmap”、“DiskIdxMap”和“sata_remap”。
 
-If a model is chosen that uses the Device-tree system to define the HDs, there is no need to configure anything. In the case of models that do not use device-tree, the configurations must be done manually and for this there is an option in the "cmdline" menu to display the SATA controllers, DUMMY ports and ports in use, to assist in the creation of the "SataPortMap", "DiskIdxMap" and "sata_remap" if necessary.
+另一个重要的一点是，加载器检测CPU是否有MOVBE指令，并且不显示需要它的型号。因此，如果DS918+和DVA3221型号没有显示，这是因为CPU缺乏对MOVBE指令的支持。您可以禁用此限制并自行承担测试风险。
 
-Another important point is that the loader detects whether or not the CPU has the MOVBE instruction and does not display the models that require it. So if the DS918+ and DVA3221 models are not displayed it is because of the CPU's lack of support for MOVBE instructions. You can disable this restriction and test at your own risk.
+我开发了一个简单的补丁，在没有device-tree的模型上不再显示虚拟端口错误，用户将能够安装而不必担心它。
 
-I developed a simple patch to no longer display the DUMMY port error on models without device-tree, the user will be able to install without having to worry about it.
+## 快速入门指南
 
-## Quickstart guide
-
-After booting the loader, the following screen should appear. Type menu.sh and press `<ENTER>`:
+启动加载程序后，应该出现以下屏幕。输入 menu.sh 并按 `<ENTER>`:
 
 ![](doc/first-screen.png)
 
-If you prefer, you can access it via the web:
+如果你愿意，你可以通过网络访问:
 
 ![](doc/ttyd.png)
 
-Select the "model" option and choose the model you prefer:
+选择“型号”选项，并选择您喜欢的型号:
 
 ![](doc/model.png)
 
-Select the "Buildnumber" option and choose the first option:
+选择“Buildnumber”选项并选择第一个选项:
 
 ![](doc/buildnumber.png)
 
-Go to "Serial" menu and choose "Generate a random serial number".
+进入“Serial”菜单，选择“Generate a random Serial number”。
 
-Select the "Build" option and wait for the loader to be generated:
+选择“Build”选项，等待加载器生成:
 
 ![](doc/making.png)
 
-Select the "Boot" option and wait for the DSM to boot:
+选择“Boot”选项，等待DSM启动:
 
 ![](doc/DSM%20boot.png)
 
-The DSM kernel does not display messages on the screen, so it is necessary to continue the process of configuring DSM through the browser by accessing the address `http://<ip>`.
-There are several tutorials on how to configure DSM over the internet, which will not be covered here.
+由于DSM内核不会在屏幕上显示消息，因此需要通过浏览器访问地址`http://<ip>`来继续配置DSM的过程。
+有一些关于如何在互联网上配置DSM的教程，这里不做介绍。
 
-# Tutorials
+# 教程
 
-An ARPL user (Rikkie) created a tutorial to install ARPL on a proxmox server:
+ARPL用户(Rikkie)创建了一个在proxmox服务器上安装ARPL的教程:
 https://hotstuff.asia/2023/01/03/xpenology-with-arpl-on-proxmox-the-easy-way/
 
-# Troubles/questions/etc
+# 麻烦/问题/等等
 
-Please search the forums at https://xpenology.com/forum if your question/problem has been discussed and resolved. If you can't find a solution, use github issues.
+如果您的问题已经被讨论和解决，请搜索论坛 https://xpenology.com/forum 如果你找不到解决方案，请使用 github issues。
 
-# Thanks
+# 感谢
 
-All code was based on the work of TTG, pocopico, jumkey and others involved in continuing TTG's original redpill-load project.
+所有代码都是基于TTG、pocopico、jumkey和其他参与继续TTG最初的redpill-load项目的人的工作。
 
-More information will be added in the future.
+更多信息将在未来添加。
