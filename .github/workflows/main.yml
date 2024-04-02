@@ -12,7 +12,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@main
 
        # zh_CN
       - name: zh_CN
@@ -29,7 +29,7 @@ jobs:
       # Check buildroot cache
       - name: Cache buildroot
         id: br-cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: .buildroot
           key: ${{ runner.os }}-${{ hashFiles('files/configs/arpl_defconfig') }}
@@ -164,7 +164,7 @@ jobs:
           zip -9j update.zip sha256sum 
       # Upload artifact
       - name: Upload
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Images
           path: |
@@ -174,7 +174,7 @@ jobs:
 
       # Publish a release if is a tag
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
           body: |  
